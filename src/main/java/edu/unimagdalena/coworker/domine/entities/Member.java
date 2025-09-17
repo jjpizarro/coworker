@@ -1,11 +1,15 @@
-package edu.unimagdalena.coworker.entities;
+package edu.unimagdalena.coworker.domine.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "members")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

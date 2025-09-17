@@ -1,4 +1,4 @@
-package edu.unimagdalena.coworker.entities;
+package edu.unimagdalena.coworker.domine.entities;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -7,7 +7,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "spaces")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Space {
     @Id
@@ -15,8 +18,7 @@ public class Space {
     private Long id;
     private String name;
     private String address;
-    @OneToMany(mappedBy = "spaces")
-    @Builder.Default
+    @OneToMany(mappedBy = "space")
     private List<Room> rooms = new ArrayList<>();
     public void addRoom(Room r){
         rooms.add(r);

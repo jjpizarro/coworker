@@ -1,11 +1,17 @@
-package edu.unimagdalena.coworker.entities;
+package edu.unimagdalena.coworker.domine.entities;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
-@Entity @Table(name = "reservations") @Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
+@Entity
+@Table(name = "reservations")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +20,6 @@ public class Reservation {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
     @OneToMany(mappedBy = "reservation")
-    @Builder.Default
     private List<ReservationItem> items = new ArrayList<>();
 
     public void addItem(ReservationItem item){

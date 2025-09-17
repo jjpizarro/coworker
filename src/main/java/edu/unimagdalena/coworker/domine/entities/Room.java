@@ -1,4 +1,4 @@
-package edu.unimagdalena.coworker.entities;
+package edu.unimagdalena.coworker.domine.entities;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
@@ -7,7 +7,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "rooms")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Room {
     @Id
     @GeneratedValue
@@ -22,7 +26,6 @@ public class Room {
     @JoinTable(name = "room_amenities",
     joinColumns = @JoinColumn(name = "room_id"),
     inverseJoinColumns = @JoinColumn(name = "amenity_id"))
-    @Builder.Default
     private Set<Amenity> amenities = new HashSet<>();
 
     public void addAmenity(Amenity a){
