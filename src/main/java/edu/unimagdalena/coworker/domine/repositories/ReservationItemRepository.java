@@ -10,23 +10,30 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReservationItemRepository extends JpaRepository<ReservationItem, Long> {
     List<ReservationItem> findByRoom_Id(Long roomId);
+
+    // JPQL: detectar solapamientos en una sala
     @Query("""
-        SELECT CASE WHEN COUNT(ri) > 0 THEN TRUE ELSE FALSE END 
-        FROM ReservationItem ri
-        WHERE ri.room.id = :roomId
-        AND ri.startAt < :end
-        AND ri.endAt > :start
-    """)
+         SELECT CASE WHEN COUNT(ri) > 0 THEN TRUE ELSE FALSE END
+         FROM ReservationItem ri
+         WHERE ri.room.id = :roomId
+           AND ri.startAt < :end
+           AND ri.endAt   > :start
+         """)
     boolean existsOverlap(@Param("roomId") Long roomId,
-                          @Param("start")OffsetDateTime start,
-                          @Param("end") OffsetDateTime end);
+                          @Param("start") OffsetDateTime start,
+                          @Param("end")   OffsetDateTime end);
+
+    // JPQL: listar los bloques que se solapan
     @Query("""
-        SELECT new edu.unimagdalena.coworker.domine.view.ReservationItemView(
-            ri.reservation.id, ri.room.id, ri.startAt, ri.endAt
-        )
-        FROM ReservationItem ri
-        WHERE ri.reservation.id = :reservationId
-        ORDER BY ri.startAt              
-    """)
-    List<ReservationItemView> findViewByReservation(@Param("reservationId") Long reservationId);
+         SELECT ri FROM ReservationItem ri
+         JOIN FETCH ri.reservation r
+         JOIN FETCH ri.room room
+         WHERE room.id = :roomId
+           AND ri.startAt < :end
+           AND ri.endAt   > :start
+         ORDER BY ri.startAt
+         """)
+    List<ReservationItem> findOverlaps(@Param("roomId") Long roomId,
+                                       @Param("start") OffsetDateTime start,
+                                       @Param("end")   OffsetDateTime end);
 }

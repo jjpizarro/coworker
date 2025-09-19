@@ -1,41 +1,42 @@
 package edu.unimagdalena.coworker.domine.repositories;
 
+import edu.unimagdalena.coworker.domine.entities.Amenity;
+import edu.unimagdalena.coworker.domine.entities.Room;
 import edu.unimagdalena.coworker.domine.entities.Space;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-@DataJpaTest
-@Testcontainers
-class SpaceRepositoryTest {
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+class SpaceRepositoryTest extends AbstractRepositoryIT {
 
-    @Autowired
-    SpaceRepository spaceRepository;
-    private Space space;
-    @BeforeEach
-    void setUp() {
-
-    }
+    @Autowired SpaceRepository spaceRepo;
+    @Autowired RoomRepository roomRepo;
+    @Autowired AmenityRepository amenityRepo;
 
     @Test
-    @DisplayName("Dado los datos de un space guardarlo en la db")
-    void save_space() {
-        //Arrange
-        space = Space.builder().name("HQ Centro").address("Cra4#21-21").build();
-        // Act
-        spaceRepository.save(space);
-        // Assert
-        assertThat(space.getId()).isNotNull();
+    @DisplayName("Space: búsqueda profunda sin N+1 (rooms + amenities)")
+    void shouldSearchSpacesWithRoomsAndAmenitiesWithoutNPlusOne() {
+        // Given
+        var space = spaceRepo.save(Space.builder().name("Cowork Centro").address("Cra 1").build());
+        var r1 = roomRepo.save(Room.builder().name("Sala A").capacity(8).space(space).build());
+        var r2 = roomRepo.save(Room.builder().name("Sala B").capacity(10).space(space).build());
+        var wifi = amenityRepo.save(Amenity.builder().name("WiFi").build());
+        var tv   = amenityRepo.save(Amenity.builder().name("TV").build());
+        r1.addAmenity(wifi); r1.addAmenity(tv);
+        r2.addAmenity(wifi);
+        roomRepo.save(r1); roomRepo.save(r2);
+
+        // When
+        var found = spaceRepo.searchSpacesDeep("centro");
+
+        // Then
+        assertThat(found).hasSize(1);
+        var loaded = found.get(0);
+        assertThat(loaded.getRooms()).hasSize(2);
+        assertThat(loaded.getRooms().stream()
+                .flatMap(r -> r.getAmenities().stream())
+                .map(Amenity::getName))
+                .contains("WiFi", "TV");
     }
 }

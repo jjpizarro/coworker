@@ -19,6 +19,7 @@ public class Space {
     private String name;
     private String address;
     @OneToMany(mappedBy = "space")
+    @Builder.Default
     private List<Room> rooms = new ArrayList<>();
     public void addRoom(Room r){
         rooms.add(r);

@@ -26,6 +26,7 @@ public class Room {
     @JoinTable(name = "room_amenities",
     joinColumns = @JoinColumn(name = "room_id"),
     inverseJoinColumns = @JoinColumn(name = "amenity_id"))
+    @Builder.Default
     private Set<Amenity> amenities = new HashSet<>();
 
     public void addAmenity(Amenity a){

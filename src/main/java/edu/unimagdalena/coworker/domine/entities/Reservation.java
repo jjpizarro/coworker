@@ -1,6 +1,7 @@
 package edu.unimagdalena.coworker.domine.entities;
 
 import jakarta.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
@@ -19,7 +20,10 @@ public class Reservation {
     @ManyToOne(optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+    @Column(nullable = false)
+    private OffsetDateTime createdAt;
     @OneToMany(mappedBy = "reservation")
+    @Builder.Default
     private List<ReservationItem> items = new ArrayList<>();
 
     public void addItem(ReservationItem item){

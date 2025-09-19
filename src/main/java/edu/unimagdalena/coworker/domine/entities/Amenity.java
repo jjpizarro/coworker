@@ -17,5 +17,6 @@ public class Amenity {
     private Long id;
     private String name;
     @ManyToMany (mappedBy = "amenities")
+    @Builder.Default
     private Set<Room> rooms = new HashSet<>();
 }
