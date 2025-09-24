@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+
 class RoomRepositoryTest extends AbstractRepositoryIT {
 
     @Autowired
