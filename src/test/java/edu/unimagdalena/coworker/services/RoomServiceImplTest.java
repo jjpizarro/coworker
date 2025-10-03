@@ -40,7 +40,9 @@ class RoomServiceImplTest {
     void shouldCreateUnderSpaceReturningDto() {
         when(spaceRepo.findById(1L)).thenReturn(Optional.of(Space.builder().id(1L).name("HQ").build()));
         when(roomRepo.save(any())).thenAnswer(inv -> {
-            Room r = inv.getArgument(0); r.setId(100L); return r;
+            Room r = inv.getArgument(0);
+            r.setId(100L);
+            return r;
         });
 
         var res = service.create(1L, new RoomCreateRequest("Sala A", 8));
@@ -54,7 +56,8 @@ class RoomServiceImplTest {
     void shouldAddAmenityAndMapResponse() {
         var room = Room.builder().id(5L).name("R").amenities(new HashSet<>()).build();
         var amenity = Amenity.builder().id(2L).name("WiFi").rooms(new HashSet<>()).build();
-        when(roomRepo.findById(5L)).thenReturn(Optional.of(room));
+
+        when(roomRepo.findById(anyLong())).thenReturn(Optional.of(room));
         when(amenityRepo.findById(2L)).thenReturn(Optional.of(amenity));
 
         var roomResponse = service.addAmenity(5L, 2L);

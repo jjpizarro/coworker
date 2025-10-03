@@ -1,0 +1,110 @@
+
+# Crear miembro
+curl -i -X POST "http://localhost:8080/api/members" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Ana","email":"ana@d.com","profile":{"phone":"+57","company":"UniMagdalena"}}'
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/members/1"
+
+# Listar con paginación
+curl -i -X GET "http://localhost:8080/api/members?page=0&size=5"
+
+# Buscar por email
+curl -i -X GET "http://localhost:8080/api/members/by-email?email=ana@d.com"
+
+# Actualizar (PATCH)
+curl -i -X PATCH "http://localhost:8080/api/members/1" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Ana Updated","email":"ana@d.com"}'
+
+# Eliminar
+curl -i -X DELETE "http://localhost:8080/api/members/1"
+
+# Crear espacio
+curl -i -X POST "http://localhost:8080/api/spaces" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"HQ Santa Marta","address":"Calle 10 # 5-45"}'
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/spaces/1"
+
+# Listar
+curl -i -X GET "http://localhost:8080/api/spaces?page=0&size=5"
+
+# Actualizar
+curl -i -X PATCH "http://localhost:8080/api/spaces/1" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"HQ Magdalena"}'
+
+# Eliminar
+curl -i -X DELETE "http://localhost:8080/api/spaces/1"
+
+
+# Crear sala dentro de un espacio
+curl -i -X POST "http://localhost:8080/api/spaces/1/rooms" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Sala A","capacity":8}'
+
+# Obtener sala
+curl -i -X GET "http://localhost:8080/api/rooms/1"
+
+# Listar salas por espacio
+curl -i -X GET "http://localhost:8080/api/spaces/1/rooms?page=0&size=5"
+
+# Agregar amenity a sala
+curl -i -X POST "http://localhost:8080/api/rooms/1/amenities/1"
+
+# Quitar amenity de sala
+curl -i -X DELETE "http://localhost:8080/api/rooms/1/amenities/1"
+
+# Buscar salas disponibles
+curl -i -X GET "http://localhost:8080/api/spaces/1/rooms/available?start=2025-10-05T09:00:00Z&end=2025-10-05T11:00:00Z&minCapacity=5"
+
+# Eliminar sala
+curl -i -X DELETE "http://localhost:8080/api/rooms/1"
+
+
+# Crear reserva
+curl -i -X POST "http://localhost:8080/api/reservations" \
+  -H "Content-Type: application/json" \
+  -d '{"memberId":1}'
+
+# Obtener reserva
+curl -i -X GET "http://localhost:8080/api/reservations/1"
+
+# Listar reservas por miembro
+curl -i -X GET "http://localhost:8080/api/reservations?email=ana@d.com&page=0&size=5"
+
+# Eliminar reserva
+curl -i -X DELETE "http://localhost:8080/api/reservations/1"
+
+# Limpiar reservas viejas
+curl -i -X DELETE "http://localhost:8080/api/reservations/cleanup?before=2025-01-01T00:00:00Z"
+
+
+# Agregar item a reserva
+curl -i -X POST "http://localhost:8080/api/reservations/1/items" \
+  -H "Content-Type: application/json" \
+  -d '{"roomId":1,"startAt":"2025-10-05T09:00:00Z","endAt":"2025-10-05T11:00:00Z"}'
+
+# Listar items de una reserva
+curl -i -X GET "http://localhost:8080/api/reservations/1/items"
+
+# Eliminar item de reserva
+curl -i -X DELETE "http://localhost:8080/api/reservations/1/items/1"
+
+
+# Crear amenity
+curl -i -X POST "http://localhost:8080/api/amenities" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"WiFi"}'
+
+# Obtener amenity
+curl -i -X GET "http://localhost:8080/api/amenities/1"
+
+# Listar amenities
+curl -i -X GET "http://localhost:8080/api/amenities"
+
+# Eliminar amenity
+curl -i -X DELETE "http://localhost:8080/api/amenities/1"
