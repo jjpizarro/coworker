@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ReservationItemRepository extends JpaRepository<ReservationItem, Long> {
+
+    List<ReservationItem> findByReservation_Id(Long reservationId);
     List<ReservationItem> findByRoom_Id(Long roomId);
 
     // JPQL: detectar solapamientos en una sala
