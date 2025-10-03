@@ -23,7 +23,6 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepo;
     private final SpaceRepository spaceRepo;
     private final AmenityRepository amenityRepo;
-    private final ReservationItemRepository itemRepo; // usado para reglas futuras
 
     @Override
     public RoomResponse create(Long spaceId, RoomCreateRequest req) {

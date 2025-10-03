@@ -5,6 +5,7 @@ import edu.unimagdalena.coworker.api.dto.RoomDtos.RoomCreateRequest;
 import edu.unimagdalena.coworker.api.dto.RoomDtos.RoomResponse;
 import edu.unimagdalena.coworker.domine.entities.Amenity;
 import edu.unimagdalena.coworker.domine.entities.Room;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RoomMapper {
@@ -12,7 +13,7 @@ public class RoomMapper {
         return Room.builder().name(req.name()).capacity(req.capacity()).build();
     }
     public static RoomResponse toResponse(Room r) {
-        var amenities = r.getAmenities() == null ? java.util.Set.<AmenityResponse>of() :
+        var amenities = r.getAmenities() == null ? Set.<AmenityResponse>of() :
                 r.getAmenities().stream()
                         .map(a -> new AmenityResponse(a.getId(), a.getName()))
                         .collect(Collectors.toSet());
