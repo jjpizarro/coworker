@@ -15,9 +15,12 @@ import java.util.List;
 @Transactional
 public class AmenityServiceImpl implements AmenityService {
     private final AmenityRepository repo;
-
+    @Transactional
     @Override public AmenityResponse create(AmenityCreateRequest req) {
-        return AmenityMapper.toResponse(repo.save(AmenityMapper.toEntity(req)));
+        var amenityEntity = AmenityMapper.toEntity(req);
+        var entitySaved = repo.save(amenityEntity);
+        var amenityDtoResponse = AmenityMapper.toResponse(entitySaved);
+        return amenityDtoResponse;
     }
 
     @Override @Transactional(readOnly = true)
