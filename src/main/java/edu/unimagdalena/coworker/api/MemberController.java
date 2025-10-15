@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
 @Validated
 public class MemberController {
@@ -21,13 +21,14 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberResponse> create(@Valid @RequestBody MemberCreateRequest req,
                                                  UriComponentsBuilder uriBuilder) {
-        var body = service.create(req);
-        var location = uriBuilder.path("/api/members/{id}").buildAndExpand(body.id()).toUri();
-        return ResponseEntity.created(location).body(body);
+        var memberCreated = service.create(req);
+        var location = uriBuilder.path("/api/members/{id}").buildAndExpand(memberCreated.id()).toUri();
+        return ResponseEntity.created(location).body(memberCreated);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> get(@PathVariable Long id) {
+
         return ResponseEntity.ok(service.get(id));
     }
 

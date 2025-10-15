@@ -19,7 +19,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, WebRequest req) {
         var violations = ex.getBindingResult().getFieldErrors()
                 .stream().map(fe -> new ApiError.FieldViolation(fe.getField(), fe.getDefaultMessage())).toList();
-        var body = ApiError.of(HttpStatus.BAD_REQUEST, "Validation failed", req.getDescription(false), violations);
+        var body = ApiError.of(HttpStatus.BAD_REQUEST,
+                "Validation failed",
+                req.getDescription(false),
+                violations);
         return ResponseEntity.badRequest().body(body);
     }
 
@@ -46,7 +49,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, WebRequest req) {
-        var body = ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", req.getDescription(false), List.of());
+        var body = ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), req.getDescription(false), List.of());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

@@ -33,7 +33,7 @@ class MemberControllerTest {
 
         when(service.create(any())).thenReturn(resp);
 
-        mvc.perform(post("/api/members")
+        mvc.perform(post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(req)))
                 .andExpect(status().isCreated())
@@ -45,7 +45,7 @@ class MemberControllerTest {
     void get_shouldReturn200() throws Exception {
         when(service.get(5L)).thenReturn(new MemberResponse(5L,"A","a@d.com",null));
 
-        mvc.perform(get("/api/members/5"))
+        mvc.perform(get("/api/v1/members/5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5));
     }
@@ -54,14 +54,14 @@ class MemberControllerTest {
     void get_shouldReturn404WhenNotFound() throws Exception {
         when(service.get(99L)).thenThrow(new NotFoundException("Member 99 not found"));
 
-        mvc.perform(get("/api/members/99"))
+        mvc.perform(get("/api/v1/members/99"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Member 99 not found"));
     }
 
     @Test
     void delete_shouldReturn204() throws Exception {
-        mvc.perform(delete("/api/members/3"))
+        mvc.perform(delete("/api/v1/members/3"))
                 .andExpect(status().isNoContent());
         verify(service).delete(3L);
     }
