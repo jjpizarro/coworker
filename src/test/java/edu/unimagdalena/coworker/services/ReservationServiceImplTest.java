@@ -5,8 +5,10 @@ import edu.unimagdalena.coworker.domine.entities.Member;
 import edu.unimagdalena.coworker.domine.entities.Reservation;
 import edu.unimagdalena.coworker.domine.repositories.MemberRepository;
 import edu.unimagdalena.coworker.domine.repositories.ReservationRepository;
+import edu.unimagdalena.coworker.services.mapper.ReservationMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
@@ -26,6 +28,7 @@ class ReservationServiceImplTest {
     MemberRepository memberRepo;
     @InjectMocks
     ReservationServiceImpl service;
+    @Spy  private ReservationMapper mapper = Mappers.getMapper(ReservationMapper.class);
 
     @Test
     void shouldCreateDraftReturningDto() {

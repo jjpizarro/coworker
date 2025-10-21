@@ -10,8 +10,10 @@ import edu.unimagdalena.coworker.domine.repositories.AmenityRepository;
 import edu.unimagdalena.coworker.domine.repositories.ReservationItemRepository;
 import edu.unimagdalena.coworker.domine.repositories.RoomRepository;
 import edu.unimagdalena.coworker.domine.repositories.SpaceRepository;
+import edu.unimagdalena.coworker.services.mapper.RoomMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
@@ -35,7 +37,8 @@ class RoomServiceImplTest {
     ReservationItemRepository itemRepo;
     @InjectMocks
     RoomServiceImpl service;
-
+    @Spy
+    private RoomMapper mapper = Mappers.getMapper(RoomMapper.class);
     @Test
     void shouldCreateUnderSpaceReturningDto() {
         when(spaceRepo.findById(1L)).thenReturn(Optional.of(Space.builder().id(1L).name("HQ").build()));

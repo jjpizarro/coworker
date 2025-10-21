@@ -4,8 +4,10 @@ import edu.unimagdalena.coworker.api.dto.MemberDtos.*;
 import edu.unimagdalena.coworker.domine.entities.Member;
 import edu.unimagdalena.coworker.domine.entities.MemberProfile;
 import edu.unimagdalena.coworker.domine.repositories.MemberRepository;
+import edu.unimagdalena.coworker.services.mapper.MemberMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
@@ -21,7 +23,7 @@ class MemberServiceImplTest {
     @Mock
     MemberRepository repo;
     @InjectMocks MemberServiceImpl service;
-
+    @Spy private MemberMapper mapper = Mappers.getMapper(MemberMapper.class);
     @Test
     void shouldCreateAndReturnResponseDto() {
         var req = new MemberCreateRequest("Ana", "ana@d.com", new MemberProfileDto("+57", "Uni"));

@@ -16,28 +16,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class SpaceServiceImpl implements SpaceService {
 
     private final SpaceRepository repo;
-
+    private final SpaceMapper mapper;
     @Override public SpaceResponse create(SpaceCreateRequest req) {
-        Space saved = repo.save(SpaceMapper.toEntity(req));
-        return SpaceMapper.toResponse(saved);
+        Space saved = repo.save(mapper.toEntity(req));
+        return mapper.toResponse(saved);
     }
 
     @Override @Transactional(readOnly = true)
     public SpaceResponse get(Long id) {
-        return repo.findById(id).map(SpaceMapper::toResponse)
+        return repo.findById(id).map(s -> mapper.toResponse(s))
                 .orElseThrow(() -> new NotFoundException("Space %d not found".formatted(id)));
     }
 
     @Override @Transactional(readOnly = true)
     public Page<SpaceResponse> list(Pageable pageable) {
-        return repo.findAll(pageable).map(SpaceMapper::toResponse);
+        return repo.findAll(pageable).map(s->mapper.toResponse(s));
     }
 
     @Override
     public SpaceResponse update(Long id, SpaceUpdateRequest req) {
         var s = repo.findById(id).orElseThrow(() -> new NotFoundException("Space %d not found".formatted(id)));
-        SpaceMapper.patch(s, req);
-        return SpaceMapper.toResponse(s);
+        mapper.patch(s, req);
+        return mapper.toResponse(s);
     }
 
     @Override public void delete(Long id) { repo.deleteById(id); }

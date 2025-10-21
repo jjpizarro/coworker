@@ -17,36 +17,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository repo;
-
+    private final MemberMapper mapper;
     @Override public MemberResponse create(MemberCreateRequest req) {
-        Member memberSaved = repo.save(MemberMapper.toEntity(req));
-        return MemberMapper.toResponse(memberSaved);
+        Member memberSaved = repo.save(mapper.toEntity(req));
+        return mapper.toResponse(memberSaved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public MemberResponse get(Long id) {
-        return repo.findById(id).map(MemberMapper::toResponse)
+        return repo.findById(id).map(m->mapper.toResponse(m))
                 .orElseThrow(() -> new NotFoundException("Member %d not found".formatted(id)));
     }
 
     @Override @Transactional(readOnly = true)
     public MemberResponse getByEmail(String email) {
-        return repo.findByEmailIgnoreCase(email).map(MemberMapper::toResponse)
+        return repo.findByEmailIgnoreCase(email).map(m->mapper.toResponse(m))
                 .orElseThrow(() -> new NotFoundException("Member email %s not found".formatted(email)));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<MemberResponse> list(Pageable pageable) {
-        return repo.findAll(pageable).map(MemberMapper::toResponse);
+        return repo.findAll(pageable).map(m->mapper.toResponse(m));
     }
 
     @Override
     public MemberResponse update(Long id, MemberUpdateRequest req) {
         var m = repo.findById(id).orElseThrow(() -> new NotFoundException("Member %d not found".formatted(id)));
-        MemberMapper.patch(m, req);
-        return MemberMapper.toResponse(m);
+        mapper.patch(m, req);
+        return mapper.toResponse(m);
     }
 
     @Override public void delete(Long id) { repo.deleteById(id); }

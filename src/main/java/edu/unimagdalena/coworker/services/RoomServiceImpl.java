@@ -23,33 +23,34 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepo;
     private final SpaceRepository spaceRepo;
     private final AmenityRepository amenityRepo;
+    private final RoomMapper mapper;
 
     @Override
     public RoomResponse create(Long spaceId, RoomCreateRequest req) {
         Space s = spaceRepo.findById(spaceId).orElseThrow(() -> new NotFoundException("Space %d not found".formatted(spaceId)));
-        Room r = RoomMapper.toEntity(req);
+        Room r = mapper.toEntity(req);
         r.setSpace(s);
-        return RoomMapper.toResponse(roomRepo.save(r));
+        return mapper.toResponse(roomRepo.save(r));
     }
 
     @Override @Transactional(readOnly = true)
     public RoomResponse get(Long id) {
-        return roomRepo.findById(id).map(RoomMapper::toResponse)
+        return roomRepo.findById(id).map(r -> mapper.toResponse(r))
                 .orElseThrow(() -> new NotFoundException("Room %d not found".formatted(id)));
     }
 
     @Override @Transactional(readOnly = true)
     public List<RoomResponse> listBySpace(Long spaceId) {
         Space s = spaceRepo.findById(spaceId).orElseThrow(() -> new NotFoundException("Space %d not found".formatted(spaceId)));
-        return roomRepo.findBySpace_Name(s.getName()).stream().map(RoomMapper::toResponse).toList();
+        return roomRepo.findBySpace_Name(s.getName()).stream().map(r->mapper.toResponse(r)).toList();
     }
 
     @Override
     public RoomResponse addAmenity(Long roomId, Long amenityId) {
         Room r = roomRepo.findById(roomId).orElseThrow(() -> new NotFoundException("Room %d not found".formatted(roomId)));
         Amenity a = amenityRepo.findById(amenityId).orElseThrow(() -> new NotFoundException("Amenity %d not found".formatted(amenityId)));
-        RoomMapper.addAmenity(r, a);
-        return RoomMapper.toResponse(r);
+        mapper.addAmenity(r, a);
+        return mapper.toResponse(r);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class RoomServiceImpl implements RoomService {
         Amenity a = amenityRepo.findById(amenityId).orElseThrow(() -> new NotFoundException("Amenity %d not found".formatted(amenityId)));
         r.getAmenities().remove(a);
         a.getRooms().remove(r);
-        return RoomMapper.toResponse(r);
+        return mapper.toResponse(r);
     }
 
     @Override @Transactional(readOnly = true)
@@ -67,7 +68,7 @@ public class RoomServiceImpl implements RoomService {
         if (minCapacity != null) {
             list = list.stream().filter(r -> r.getCapacity() != null && r.getCapacity() >= minCapacity).toList();
         }
-        return list.stream().map(RoomMapper::toResponse).toList();
+        return list.stream().map(r->mapper.toResponse(r)).toList();
     }
 
     @Override public void delete(Long id) { roomRepo.deleteById(id); }

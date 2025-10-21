@@ -19,25 +19,26 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository repo;
     private final MemberRepository memberRepo;
+    private final ReservationMapper mapper;
 
     @Override
     public ReservationResponse createDraft(ReservationCreateRequest req) {
         Member m = memberRepo.findById(req.memberId())
                 .orElseThrow(() -> new NotFoundException("Member %d not found".formatted(req.memberId())));
         Reservation r = repo.save(Reservation.builder().member(m).createdAt(OffsetDateTime.now()).build());
-        return ReservationMapper.toResponse(r);
+        return mapper.toResponse(r);
     }
 
     @Override @Transactional(readOnly = true)
     public ReservationResponse get(Long id) {
         var r = repo.fetchGraphById(id);
-        return ReservationMapper.toResponse(r);
+        return mapper.toResponse(r);
     }
 
     @Override @Transactional(readOnly = true)
     public Page<ReservationResponse> listByMember(String email, Pageable pageable) {
         return repo.findByMember_EmailIgnoreCaseOrderByCreatedAtDesc(email, pageable)
-                .map(ReservationMapper::toResponse);
+                .map(rs->mapper.toResponse(rs));
     }
 
     @Override

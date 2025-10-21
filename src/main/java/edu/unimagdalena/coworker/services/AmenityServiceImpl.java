@@ -15,23 +15,25 @@ import java.util.List;
 @Transactional
 public class AmenityServiceImpl implements AmenityService {
     private final AmenityRepository repo;
+    private final AmenityMapper mapper;
+
     @Transactional
     @Override public AmenityResponse create(AmenityCreateRequest req) {
-        var amenityEntity = AmenityMapper.toEntity(req);
+        var amenityEntity = mapper.toEntity(req);
         var entitySaved = repo.save(amenityEntity);
-        var amenityDtoResponse = AmenityMapper.toResponse(entitySaved);
+        var amenityDtoResponse = mapper.toResponse(entitySaved);
         return amenityDtoResponse;
     }
 
     @Override @Transactional(readOnly = true)
     public AmenityResponse get(Long id) {
-        return repo.findById(id).map(AmenityMapper::toResponse)
+        return repo.findById(id).map(a->mapper.toResponse(a))
                 .orElseThrow(() -> new NotFoundException("Amenity %d not found".formatted(id)));
     }
 
     @Override @Transactional(readOnly = true)
     public List<AmenityResponse> list() {
-        return repo.findAll().stream().map(AmenityMapper::toResponse).toList();
+        return repo.findAll().stream().map(a->mapper.toResponse(a)).toList();
     }
 
     @Override public void delete(Long id) { repo.deleteById(id); }
